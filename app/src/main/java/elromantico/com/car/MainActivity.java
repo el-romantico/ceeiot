@@ -12,13 +12,19 @@ import android.widget.TextView;
 
 import org.apache.commons.collections.buffer.CircularFifoBuffer;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
+
 import java.util.HashSet;
 import java.util.Set;
 
 public class MainActivity extends AppCompatActivity {
 
     private final static int REQUEST_ENABLE_BT = 1;
-    private final static double PI = 3.14159265359;
 
     private static Set<String> whitelist = new HashSet<>();
     static {
@@ -29,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
     private Direction direction;
     private CircularFifoBuffer locations = new CircularFifoBuffer(1000);
 
+    private GoogleMap mMap;
     private TextView signView;
     private TextView locationView;
     private TextView speedView;
@@ -49,38 +56,36 @@ public class MainActivity extends AppCompatActivity {
                     double longitude = Double.parseDouble(signLocation[1]);
 
                     location = new Location(latitude, longitude, System.currentTimeMillis());
+
+                    LatLng markerPosition = new LatLng(latitude, longitude);
+                    mMap.addMarker(new MarkerOptions().position(markerPosition));
+                    mMap.moveCamera(CameraUpdateFactory.newLatLng(markerPosition));
+
                     locations.add(location);
                     locationView.setText("Location: " + location.toString());
 
                     Object[] locationsObj = locations.toArray();
-                    speedView.setText("Speed: " + calculateSpeed((Location) locationsObj[0], (Location) locationsObj[locationsObj.length-1]));
+                    speedView.setText("Speed: " + Physics.calculateSpeed((Location) locationsObj[0],
+                            (Location) locationsObj[locationsObj.length - 1]));
                 }
             }
         }
     };
 
-    private static double degToRad(double deg) {
-        return deg * PI / 180;
-    }
-
-    private static double calculateSpeed(Location start, Location end) {
-        double dLat = degToRad(end.latitude - start.latitude);
-        double dLon = degToRad(end.longitude - start.longitude);
-        double lat1 = degToRad(start.latitude);
-        double lat2 = degToRad(end.latitude);
-
-        double a = Math.sin(dLat/2) * Math.sin(dLat/2) +
-                Math.sin(dLon/2) * Math.sin(dLon/2) * Math.cos(lat1) * Math.cos(lat2);
-        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-        double distance = 6371 * c / 1000;
-        double duration = (end.timestamp - start.timestamp) / 3600000;
-        return distance / duration;
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.map);
+        mapFragment.getMapAsync(new OnMapReadyCallback() {
+
+            @Override
+            public void onMapReady(GoogleMap googleMap) {
+                mMap = googleMap;
+            }
+        });
 
         signView = (TextView) findViewById(R.id.sign);
         locationView = (TextView) findViewById(R.id.location);
