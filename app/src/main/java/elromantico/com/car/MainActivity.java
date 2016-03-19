@@ -46,9 +46,9 @@ public class MainActivity extends AppCompatActivity {
                     String[] signLocation = components[1].split("\\_");
 
                     double latitude = Double.parseDouble(signLocation[0]);
-                    double longtitude = Double.parseDouble(signLocation[1]);
+                    double longitude = Double.parseDouble(signLocation[1]);
 
-                    location = new Location(latitude, longtitude, System.currentTimeMillis());
+                    location = new Location(latitude, longitude, System.currentTimeMillis());
                     locations.add(location);
                     locationView.setText("Location: " + location.toString());
 
@@ -65,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
 
     private static double calculateSpeed(Location start, Location end) {
         double dLat = degToRad(end.latitude - start.latitude);
-        double dLon = degToRad(end.longtitude - start.longtitude);
+        double dLon = degToRad(end.longitude - start.longitude);
         double lat1 = degToRad(start.latitude);
         double lat2 = degToRad(end.latitude);
 
