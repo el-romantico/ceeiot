@@ -1,10 +1,12 @@
 package elromantico.com.car;
 
-public class Physics {
+public final class SpeedCalculator {
 
     private final static double PI = 3.14159265359;
 
-    public static double degToRad(double deg) {
+    private SpeedCalculator() {}
+
+    private static double degToRad(double deg) {
         return deg * PI / 180;
     }
 
@@ -14,11 +16,11 @@ public class Physics {
         double lat1 = degToRad(start.latitude);
         double lat2 = degToRad(end.latitude);
 
-        double a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-                Math.sin(dLon / 2) * Math.sin(dLon / 2) * Math.cos(lat1) * Math.cos(lat2);
-        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-        double distance = 6371 * c / 1000;
-        double duration = (end.timestamp - start.timestamp) / 3600000;
+        double a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                Math.sin(dLon/2) * Math.sin(dLon/2) * Math.cos(lat1) * Math.cos(lat2);
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+        double distance = 6371 * c;
+        double duration = (end.timestamp - start.timestamp) / 3600000.0;
         return distance / duration;
     }
 }
