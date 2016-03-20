@@ -39,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
         whitelist.add("10:68:3F:58:81:50"); // NEXUS 4
         whitelist.add("F0:08:F1:F0:52:71"); // NEXUS S
         whitelist.add("9C:3A:AF:2C:4E:E1"); // DIANA PHONE
-        whitelist.add("08:EC:A9:CE:A1:1B"); // ELENA PHONE
+        //whitelist.add("08:EC:A9:CE:A1:1B"); // ELENA PHONE
         whitelist.add("A0:8D:16:DE:34:F6"); // KATIA PHONE
 
         SIGNS.put(Signs.A12.name(), R.drawable.alpha12);
@@ -76,8 +76,9 @@ public class MainActivity extends AppCompatActivity {
                     location = new Location(latitude, longitude, currentTime);
 
                     LatLng markerPosition = new LatLng(latitude, longitude);
+                    mMap.clear();
                     mMap.addMarker(new MarkerOptions().position(markerPosition));
-                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(markerPosition, 15.0f));
+                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(markerPosition, 18.0f));
 
                     String[] signNames = components[0].split("\\_");
                     for(int i = 0; i < signNames.length; i++){
