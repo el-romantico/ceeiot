@@ -33,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
 
     private static Set<String> whitelist = new HashSet<>();
     private static final Map<String, Integer> SIGNS = new HashMap<>();
+    private static Set<ConnectedSign> connectedDevices = new HashSet<>();
 
     static {
         whitelist.add("C0:EE:FB:58:B1:DE");
@@ -63,13 +64,14 @@ public class MainActivity extends AppCompatActivity {
                 if (whitelist.contains(device.getAddress())) {
                     String[] components = device.getName().split("\\|");
 
-                    String signName = components[0];
+
                     String[] signLocation = components[1].split("\\_");
 
                     double latitude = Double.parseDouble(signLocation[0]);
                     double longitude = Double.parseDouble(signLocation[1]);
 
-                    location = new Location(latitude, longitude, System.currentTimeMillis());
+                    long currentTime = System.currentTimeMillis();
+                    location = new Location(latitude, longitude, currentTime);
 
                     LatLng markerPosition = new LatLng(latitude, longitude);
                     mMap.addMarker(new MarkerOptions().position(markerPosition));
@@ -85,6 +87,10 @@ public class MainActivity extends AppCompatActivity {
                         locationView.append("Speed: Only one!\n");
                     }
 
+                    String signName = components[0];
+                    connectedDevices.add(new ConnectedSign(signName, currentTime));
+
+                    // Update UI for all signs and pass connected devices ordered by timestamp
                     ImageView bigSign = (ImageView) findViewById(R.id.bigSign);
                     bigSign.setImageDrawable(getDrawable(SIGNS.get(signName)));
                 }
