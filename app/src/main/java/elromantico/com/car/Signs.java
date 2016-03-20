@@ -5,6 +5,8 @@ package elromantico.com.car;
  */
 public enum Signs {
     A12,
+    A13,
+    A19,
     B1,
     B2,
     B3,

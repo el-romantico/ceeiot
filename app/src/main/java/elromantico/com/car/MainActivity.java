@@ -42,6 +42,8 @@ public class MainActivity extends AppCompatActivity {
         whitelist.add("08:EC:A9:CE:A1:1B"); // ELENA PHONE
 
         SIGNS.put(Signs.A12.name(), R.drawable.alpha12);
+        SIGNS.put(Signs.A13.name(), R.drawable.alpha13);
+        SIGNS.put(Signs.A19.name(), R.drawable.alpha19);
         SIGNS.put(Signs.B1.name(), R.drawable.beta1);
         SIGNS.put(Signs.B2.name(), R.drawable.beta2);
         SIGNS.put(Signs.B3.name(), R.drawable.beta3);
