@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -110,25 +111,19 @@ public class MainActivity extends AppCompatActivity {
         for(int i = 0; i < signs.length; i++) {
             if(orderedConnectedSigns.size() > i) {
                 signs[i].setImageDrawable(getDrawable(SIGNS.get(orderedConnectedSigns.get(i).signName)));
+                signs[i].setVisibility(View.VISIBLE);
             } else {
-                signs[i].setImageDrawable(getDrawable(R.drawable.epsilon17)); // TODO: Replace with placeholder
+                signs[i].setVisibility(View.INVISIBLE);
             }
         }
     }
-
-    /**
-     * ATTENTION: This was auto-generated to implement the App Indexing API.
-     * See https://g.co/AppIndexing/AndroidStudio for more information.
-     */
-    private GoogleApiClient client;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(new OnMapReadyCallback() {
 
             @Override
