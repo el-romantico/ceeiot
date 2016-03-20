@@ -25,6 +25,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -98,7 +99,7 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
-    private void updateSignsUI(ArrayList<ConnectedSign> orderedConnectedSigns){
+    private void updateSignsUI(List<ConnectedSign> orderedConnectedSigns){
         ImageView[] signs = new ImageView[5];
         signs[0] = (ImageView) findViewById(R.id.bigSign);
         signs[1] = (ImageView) findViewById(R.id.smallSign1);
