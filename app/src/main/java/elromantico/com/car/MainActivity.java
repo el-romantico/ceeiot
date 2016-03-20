@@ -121,7 +121,7 @@ public class MainActivity extends AppCompatActivity {
             startActivityForResult(new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE), REQUEST_ENABLE_BT);
         }
         bluetoothAdapter.startDiscovery();
-
+        updateSignsUI(pool.toOrderedSignList());
     }
 
 
