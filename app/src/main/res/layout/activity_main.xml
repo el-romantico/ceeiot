@@ -36,56 +36,82 @@
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:orientation="vertical"
+        android:paddingStart="8dp"
         android:layout_weight=".3">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="0.5"
+            android:layout_marginBottom="4dp"
             android:orientation="horizontal">
+
             <ImageView
                 android:id="@+id/bigSign"
-                android:layout_width="175dp"
-                android:layout_height="175dp"
+                android:scaleType="fitXY"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:src="@drawable/epsilon17" />
         </LinearLayout>
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="0.25"
+            android:layout_marginBottom="4dp"
             android:orientation="horizontal">
+
             <ImageView
                 android:id="@+id/smallSign1"
-                android:layout_width="85dp"
-                android:layout_height="85dp"
+                android:scaleType="fitXY"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_toStartOf="@+id/firstRowSplitter"
                 android:src="@drawable/epsilon17" />
+
+            <View
+                android:id="@+id/firstRowSplitter"
+                android:layout_width="4dp"
+                android:layout_height="match_parent"
+                android:layout_centerHorizontal="true" />
 
             <ImageView
                 android:id="@+id/smallSign2"
-                android:layout_width="85dp"
-                android:layout_height="85dp"
+                android:scaleType="fitXY"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_toEndOf="@+id/firstRowSplitter"
                 android:src="@drawable/epsilon17" />
-        </LinearLayout>
+        </RelativeLayout>
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="0.25"
             android:orientation="horizontal">
+
             <ImageView
                 android:id="@+id/smallSign3"
-                android:layout_width="85dp"
-                android:layout_height="85dp"
+                android:scaleType="fitXY"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_toStartOf="@+id/secondRowSplitter"
                 android:src="@drawable/epsilon17" />
+
+            <View
+                android:id="@+id/secondRowSplitter"
+                android:layout_width="4dp"
+                android:layout_height="match_parent"
+                android:layout_centerHorizontal="true" />
 
             <ImageView
                 android:id="@+id/smallSign4"
-                android:layout_width="85dp"
-                android:layout_height="85dp"
+                android:scaleType="fitXY"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_toEndOf="@+id/secondRowSplitter"
                 android:src="@drawable/epsilon17" />
-        </LinearLayout>
-
+        </RelativeLayout>
 
     </LinearLayout>
 </LinearLayout>
