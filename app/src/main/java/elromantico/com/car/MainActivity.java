@@ -2,30 +2,31 @@ package elromantico.com.car;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
-import android.content.BroadcastReceiver;
-import android.content.Context;
+import android.bluetooth.le.BluetoothLeScanner;
+import android.bluetooth.le.ScanCallback;
+import android.bluetooth.le.ScanFilter;
+import android.bluetooth.le.ScanResult;
+import android.bluetooth.le.ScanSettings;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.ParcelUuid;
 import android.support.v7.app.AppCompatActivity;
-import android.widget.ImageView;
-import android.widget.TextView;
+import android.text.TextUtils;
+import android.util.Log;
 
-import com.google.android.gms.common.api.GoogleApiClient;
-
-import org.apache.commons.collections.buffer.CircularFifoBuffer;
-
-import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -33,6 +34,11 @@ public class MainActivity extends AppCompatActivity {
 
     private static Set<String> whitelist = new HashSet<>();
     private static final Map<String, Integer> SIGNS = new HashMap<>();
+    private static ScanSettings settings = new ScanSettings.Builder().setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY).build();
+    private static List<ScanFilter> filters = new ArrayList<>();
+
+    private Handler mHandler;
+    private BluetoothLeScanner mLEScanner;
 
     static {
         whitelist.add("C0:EE:FB:58:B1:DE");
@@ -42,70 +48,22 @@ public class MainActivity extends AppCompatActivity {
         SIGNS.put("A12", R.drawable.alpha12);
         SIGNS.put("B2", R.drawable.beta2);
         SIGNS.put("B27", R.drawable.beta27);
+
+        filters.add(new ScanFilter.Builder()
+                .setServiceUuid(new ParcelUuid(UUID.fromString("CDB7950D-73F1-4D4D-8E47-C090502DBD63")))
+                .build());
     }
 
-    private Location location;
-    private Direction direction;
-    private CircularFifoBuffer locations = new CircularFifoBuffer(1000);
     private BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 
     private GoogleMap mMap;
-    private TextView signView;
-    private TextView locationView;
-    private TextView speedView;
-
-    private final BroadcastReceiver bluetoothReceiver = new BroadcastReceiver() {
-        public void onReceive(Context context, Intent intent) {
-            String action = intent.getAction();
-            if (BluetoothDevice.ACTION_FOUND.equals(action)) {
-                BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-
-                if (whitelist.contains(device.getAddress())) {
-                    String[] components = device.getName().split("\\|");
-
-                    String signName = components[0];
-                    String[] signLocation = components[1].split("\\_");
-
-                    double latitude = Double.parseDouble(signLocation[0]);
-                    double longitude = Double.parseDouble(signLocation[1]);
-
-                    location = new Location(latitude, longitude, System.currentTimeMillis());
-
-                    LatLng markerPosition = new LatLng(latitude, longitude);
-                    mMap.addMarker(new MarkerOptions().position(markerPosition));
-                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(markerPosition, 15.0f));
-
-                    locations.add(location);
-
-                    Object[] locationsObj = locations.toArray();
-                    if (locationsObj.length > 1) {
-                        locationView.append("Speed: " + SpeedCalculator.calculateSpeed((Location) locationsObj[locationsObj.length - 2],
-                                (Location) locationsObj[locationsObj.length - 1]) + "\n");
-                    } else {
-                        locationView.append("Speed: Only one!\n");
-                    }
-
-                    ImageView bigSign = (ImageView) findViewById(R.id.bigSign);
-                    bigSign.setImageDrawable(getDrawable(SIGNS.get(signName)));
-                }
-            } else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {
-                bluetoothAdapter.startDiscovery();
-            }
-        }
-    };
-    /**
-     * ATTENTION: This was auto-generated to implement the App Indexing API.
-     * See https://g.co/AppIndexing/AndroidStudio for more information.
-     */
-    private GoogleApiClient client;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(new OnMapReadyCallback() {
 
             @Override
@@ -114,40 +72,53 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        //signView = (TextView) findViewById(R.id.sign);
-        locationView = (TextView) findViewById(R.id.location);
-        //speedView = (TextView) findViewById(R.id.speed);
-
-        registerReceiver(bluetoothReceiver, new IntentFilter(BluetoothDevice.ACTION_FOUND));
-        registerReceiver(bluetoothReceiver, new IntentFilter(BluetoothAdapter.ACTION_DISCOVERY_FINISHED));
-
         if (!bluetoothAdapter.isEnabled()) {
             startActivityForResult(new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE), REQUEST_ENABLE_BT);
         }
-        bluetoothAdapter.startDiscovery();
 
+        mLEScanner = bluetoothAdapter.getBluetoothLeScanner();
+        mHandler = new Handler();
+        scanLeDevice(true);
     }
 
-//    @Override
-//    public void onWindowFocusChanged(boolean hasFocus) {
-//        super.onWindowFocusChanged(hasFocus);
-//
-//        ImageView bigSign = (ImageView) findViewById(R.id.bigSign);
-//
-//        int cx = bigSign.getWidth() / 2;
-//        int cy = bigSign.getHeight() / 2;
-//        float finalRadius = (float) Math.hypot(cx, cy);
-//
-//        Animator animator = ViewAnimationUtils.createCircularReveal(bigSign, cx, cy, 0, finalRadius);
-//
-//        bigSign.setVisibility(View.VISIBLE);
-//        animator.start();
-//    }
+    private void scanLeDevice(final boolean enable) {
+        if (enable) {
+            mHandler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    mLEScanner.stopScan(mScanCallback);
+                }
+            }, 30000);
+
+            mLEScanner.startScan(filters, settings, mScanCallback);
+        } else {
+
+            mLEScanner.stopScan(mScanCallback);
+        }
+    }
+
+    private ScanCallback mScanCallback = new ScanCallback() {
+        @Override
+        public void onScanResult(int callbackType, ScanResult result) {
+            BluetoothDevice btDevice = result.getDevice();
+            if (result == null || result.getDevice() == null || TextUtils.isEmpty(result.getDevice().getName())) {
+                Log.d("KOR", "Nein");
+            }
+
+            StringBuilder builder = new StringBuilder(result.getDevice().getName());
+            builder.append("\n").append(new String(result.getScanRecord().getServiceData(result.getScanRecord().getServiceUuids().get(0)), Charset.forName("UTF-8")));
+
+            Log.d("OK", "Found1 " + btDevice.getName() + ", " + builder.toString());
+        }
+
+        @Override
+        public void onScanFailed(int errorCode) {
+            Log.d("KOR", "Error Code: " + errorCode);
+        }
+    };
 
     @Override
     protected void onDestroy() {
-        unregisterReceiver(bluetoothReceiver);
-
         super.onDestroy();
     }
 }
