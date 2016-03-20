@@ -22,6 +22,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -43,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
         SIGNS.put("A12", R.drawable.alpha12);
         SIGNS.put("B2", R.drawable.beta2);
         SIGNS.put("B27", R.drawable.beta27);
+        SIGNS.put("E17", R.drawable.epsilon17);
     }
 
     private Location location;
@@ -63,8 +65,6 @@ public class MainActivity extends AppCompatActivity {
 
                 if (whitelist.contains(device.getAddress())) {
                     String[] components = device.getName().split("\\|");
-
-
                     String[] signLocation = components[1].split("\\_");
 
                     double latitude = Double.parseDouble(signLocation[0]);
@@ -90,15 +90,31 @@ public class MainActivity extends AppCompatActivity {
                     String signName = components[0];
                     pool.insert(ConnectedSignFactory.create(signName, currentTime));
 
-                    // Update UI for all signs and pass connected devices ordered by timestamp
-                    ImageView bigSign = (ImageView) findViewById(R.id.bigSign);
-                    bigSign.setImageDrawable(getDrawable(SIGNS.get(signName)));
+                    updateSignsUI(pool.toOrderedSignList());
                 }
             } else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {
                 bluetoothAdapter.startDiscovery();
             }
         }
     };
+
+    private void updateSignsUI(ArrayList<ConnectedSign> orderedConnectedSigns){
+        ImageView[] signs = new ImageView[5];
+        signs[0] = (ImageView) findViewById(R.id.bigSign);
+        signs[1] = (ImageView) findViewById(R.id.smallSign1);
+        signs[2] = (ImageView) findViewById(R.id.smallSign2);
+        signs[3] = (ImageView) findViewById(R.id.smallSign3);
+        signs[4] = (ImageView) findViewById(R.id.smallSign4);
+
+        for(int i = 0; i < signs.length; i++) {
+            if(orderedConnectedSigns.size() > i) {
+                signs[i].setImageDrawable(getDrawable(SIGNS.get(orderedConnectedSigns.get(i).signName)));
+            } else {
+                signs[i].setImageDrawable(getDrawable(R.drawable.epsilon17)); // TODO: Replace with placeholder
+            }
+        }
+    }
+
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
      * See https://g.co/AppIndexing/AndroidStudio for more information.

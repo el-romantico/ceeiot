@@ -1,5 +1,6 @@
 package elromantico.com.car;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -11,5 +12,10 @@ public class ConnectedSignPool {
 
     public void insert(ConnectedSign sign) {
         sign.insertInPool(this);
+    }
+
+    public ArrayList<ConnectedSign> toOrderedSignList() {
+        // TODO: Sort by timestamp
+        return new ArrayList<>(connectedDevices);
     }
 }
