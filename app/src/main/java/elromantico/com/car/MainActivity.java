@@ -10,7 +10,6 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import org.apache.commons.collections.buffer.CircularFifoBuffer;
 
@@ -47,14 +46,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private Location location;
-    private Direction direction;
     private CircularFifoBuffer locations = new CircularFifoBuffer(1000);
     private BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 
     private GoogleMap mMap;
-    private TextView signView;
-    private TextView locationView;
-    private TextView speedView;
 
     private final BroadcastReceiver bluetoothReceiver = new BroadcastReceiver() {
         public void onReceive(Context context, Intent intent) {
@@ -76,16 +71,6 @@ public class MainActivity extends AppCompatActivity {
                     mMap.addMarker(new MarkerOptions().position(markerPosition));
                     mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(markerPosition, 15.0f));
 
-                    locations.add(location);
-
-                    Object[] locationsObj = locations.toArray();
-                    if (locationsObj.length > 1) {
-                        locationView.append("Speed: " + SpeedCalculator.calculateSpeed((Location) locationsObj[locationsObj.length - 2],
-                                (Location) locationsObj[locationsObj.length - 1]) + "\n");
-                    } else {
-                        locationView.append("Speed: Only one!\n");
-                    }
-
                     String signName = components[0];
                     pool.insert(ConnectedSignFactory.create(signName, currentTime));
 
@@ -97,7 +82,7 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
-    private void updateSignsUI(List<ConnectedSign> orderedConnectedSigns){
+    private void updateSignsUI(List<ConnectedSign> orderedConnectedSigns) {
         ImageView[] signs = new ImageView[5];
         signs[0] = (ImageView) findViewById(R.id.bigSign);
         signs[1] = (ImageView) findViewById(R.id.smallSign1);
@@ -105,8 +90,8 @@ public class MainActivity extends AppCompatActivity {
         signs[3] = (ImageView) findViewById(R.id.smallSign3);
         signs[4] = (ImageView) findViewById(R.id.smallSign4);
 
-        for(int i = 0; i < signs.length; i++) {
-            if(orderedConnectedSigns.size() > i) {
+        for (int i = 0; i < signs.length; i++) {
+            if (orderedConnectedSigns.size() > i) {
                 signs[i].setImageDrawable(getDrawable(SIGNS.get(orderedConnectedSigns.get(i).signName)));
                 signs[i].setVisibility(View.VISIBLE);
             } else {
@@ -129,10 +114,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        //signView = (TextView) findViewById(R.id.sign);
-        locationView = (TextView) findViewById(R.id.location);
-        //speedView = (TextView) findViewById(R.id.speed);
-
         registerReceiver(bluetoothReceiver, new IntentFilter(BluetoothDevice.ACTION_FOUND));
         registerReceiver(bluetoothReceiver, new IntentFilter(BluetoothAdapter.ACTION_DISCOVERY_FINISHED));
 
@@ -143,21 +124,6 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-//    @Override
-//    public void onWindowFocusChanged(boolean hasFocus) {
-//        super.onWindowFocusChanged(hasFocus);
-//
-//        ImageView bigSign = (ImageView) findViewById(R.id.bigSign);
-//
-//        int cx = bigSign.getWidth() / 2;
-//        int cy = bigSign.getHeight() / 2;
-//        float finalRadius = (float) Math.hypot(cx, cy);
-//
-//        Animator animator = ViewAnimationUtils.createCircularReveal(bigSign, cx, cy, 0, finalRadius);
-//
-//        bigSign.setVisibility(View.VISIBLE);
-//        animator.start();
-//    }
 
     @Override
     protected void onDestroy() {
