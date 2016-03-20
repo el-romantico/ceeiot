@@ -44,7 +44,6 @@
 
             <ImageView
                 android:id="@+id/bigSign"
-                android:scaleType="fitXY"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:src="@drawable/epsilon17" />
@@ -59,7 +58,6 @@
 
             <ImageView
                 android:id="@+id/smallSign1"
-                android:scaleType="fitXY"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_toStartOf="@+id/firstRowSplitter"
@@ -73,7 +71,6 @@
 
             <ImageView
                 android:id="@+id/smallSign2"
-                android:scaleType="fitXY"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_toEndOf="@+id/firstRowSplitter"
@@ -88,7 +85,6 @@
 
             <ImageView
                 android:id="@+id/smallSign3"
-                android:scaleType="fitXY"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_toStartOf="@+id/secondRowSplitter"
@@ -102,7 +98,6 @@
 
             <ImageView
                 android:id="@+id/smallSign4"
-                android:scaleType="fitXY"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_toEndOf="@+id/secondRowSplitter"
