@@ -79,8 +79,12 @@ public class MainActivity extends AppCompatActivity {
                     locationView.setText("Location: " + location.toString());
 
                     Object[] locationsObj = locations.toArray();
-                    speedView.setText("Speed: " + SpeedCalculator.calculateSpeed((Location) locationsObj[locationsObj.length - 2],
-                            (Location) locationsObj[locationsObj.length - 1]));
+                    if (locationsObj.length > 1) {
+                        speedView.setText("Speed: " + SpeedCalculator.calculateSpeed((Location) locationsObj[locationsObj.length - 2],
+                                (Location) locationsObj[locationsObj.length - 1]));
+                    } else {
+                        speedView.setText("Speed: Only one!");
+                    }
                 }
             }
         }
