@@ -11,7 +11,7 @@ public class ClearingConnectedSign extends ConnectedSign {
 
     @Override
     public void insertInPool(ConnectedSignPool pool) {
-        // pool.connectedDevices.clear();
+        pool.connectedDevices.clear();
         super.insertInPool(pool);
     }
 
