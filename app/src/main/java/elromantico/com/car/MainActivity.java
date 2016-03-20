@@ -29,6 +29,8 @@ public class MainActivity extends AppCompatActivity {
     private static Set<String> whitelist = new HashSet<>();
     static {
         whitelist.add("C0:EE:FB:58:B1:DE");
+        whitelist.add("10:68:3F:58:81:50");
+        whitelist.add("F0:08:F1:F0:52:71");
     }
 
     private Location location;
