@@ -41,6 +41,7 @@ public class MainActivity extends AppCompatActivity {
 
         SIGNS.put("A12", R.drawable.alpha12);
         SIGNS.put("B2", R.drawable.beta2);
+        SIGNS.put("B27", R.drawable.beta27);
     }
 
     private Location location;
