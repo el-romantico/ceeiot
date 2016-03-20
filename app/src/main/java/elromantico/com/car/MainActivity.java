@@ -37,11 +37,15 @@ public class MainActivity extends AppCompatActivity {
 
     static {
         whitelist.add("C0:EE:FB:58:B1:DE");
-        whitelist.add("10:68:3F:58:81:50");
-        whitelist.add("F0:08:F1:F0:52:71");
+        whitelist.add("10:68:3F:58:81:50"); //
+        whitelist.add("F0:08:F1:F0:52:71"); // NEXUS S
+        whitelist.add("9C:3A:AF:2C:4E:E1"); // DIANA PHONE
+        whitelist.add("08:EC:A9:CE:A1:1B"); // ELENA PHONE
 
         SIGNS.put(Signs.A12.name(), R.drawable.alpha12);
+        SIGNS.put(Signs.B1.name(), R.drawable.beta1);
         SIGNS.put(Signs.B2.name(), R.drawable.beta2);
+        SIGNS.put(Signs.B3.name(), R.drawable.beta3);
         SIGNS.put(Signs.B27.name(), R.drawable.beta27);
         SIGNS.put(Signs.E17.name(), R.drawable.epsilon17);
     }
