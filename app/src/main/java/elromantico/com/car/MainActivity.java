@@ -40,10 +40,10 @@ public class MainActivity extends AppCompatActivity {
         whitelist.add("10:68:3F:58:81:50");
         whitelist.add("F0:08:F1:F0:52:71");
 
-        SIGNS.put("A12", R.drawable.alpha12);
-        SIGNS.put("B2", R.drawable.beta2);
-        SIGNS.put("B27", R.drawable.beta27);
-        SIGNS.put("E17", R.drawable.epsilon17);
+        SIGNS.put(Signs.A12.name(), R.drawable.alpha12);
+        SIGNS.put(Signs.B2.name(), R.drawable.beta2);
+        SIGNS.put(Signs.B27.name(), R.drawable.beta27);
+        SIGNS.put(Signs.E17.name(), R.drawable.epsilon17);
     }
 
     private Location location;
