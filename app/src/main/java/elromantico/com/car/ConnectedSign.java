@@ -13,6 +13,11 @@ public class ConnectedSign {
     }
 
     @Override
+    public int hashCode() {
+        return signName.hashCode();
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof ConnectedSign)) return false;
@@ -20,11 +25,9 @@ public class ConnectedSign {
         ConnectedSign that = (ConnectedSign) o;
 
         return signName.equals(that.signName);
-
     }
 
-    @Override
-    public int hashCode() {
-        return signName.hashCode();
+    public void insertInPool(ConnectedSignPool pool) {
+        pool.connectedDevices.add(this);
     }
 }

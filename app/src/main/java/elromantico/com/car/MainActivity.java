@@ -33,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
 
     private static Set<String> whitelist = new HashSet<>();
     private static final Map<String, Integer> SIGNS = new HashMap<>();
-    private static Set<ConnectedSign> connectedDevices = new HashSet<>();
+    private static final ConnectedSignPool pool = new ConnectedSignPool();
 
     static {
         whitelist.add("C0:EE:FB:58:B1:DE");
@@ -88,7 +88,7 @@ public class MainActivity extends AppCompatActivity {
                     }
 
                     String signName = components[0];
-                    connectedDevices.add(new ConnectedSign(signName, currentTime));
+                    pool.insert(ConnectedSignFactory.create(signName, currentTime));
 
                     // Update UI for all signs and pass connected devices ordered by timestamp
                     ImageView bigSign = (ImageView) findViewById(R.id.bigSign);
