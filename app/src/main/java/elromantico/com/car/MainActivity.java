@@ -77,8 +77,10 @@ public class MainActivity extends AppCompatActivity {
                     mMap.addMarker(new MarkerOptions().position(markerPosition));
                     mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(markerPosition, 15.0f));
 
-                    String signName = components[0];
-                    pool.insert(ConnectedSignFactory.create(signName, currentTime));
+                    String[] signNames = components[0].split("\\_");
+                    for(int i = 0; i < signNames.length; i++){
+                        pool.insert(ConnectedSignFactory.create(signNames[i], currentTime + i));
+                    }
 
                     updateSignsUI(pool.toOrderedSignList());
                 }
