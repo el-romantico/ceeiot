@@ -10,6 +10,7 @@ public enum Signs {
     B1,
     B2,
     B3,
+    B26,
     B27,
     E17
 }
